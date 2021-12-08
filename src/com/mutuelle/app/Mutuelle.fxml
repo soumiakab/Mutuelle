@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -10,6 +11,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
@@ -76,10 +78,9 @@
                               <Button fx:id="AddClient" mnemonicParsing="false" onAction="#addToList" prefHeight="25.0" prefWidth="269.0" style="-fx-font-weight: bold; -fx-background-color: #37B5B8;" text="Ajouter" textFill="WHITE" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER" focusTraversable="true" layoutX="50.0" layoutY="484.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="67.0" prefWidth="362.0">
+                        <HBox alignment="CENTER" focusTraversable="true" layoutX="50.0" layoutY="451.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="114.0" prefWidth="148.0">
                            <children>
                               <Label prefHeight="67.0" prefWidth="205.0" style="-fx-font-weight: bold;" text="Address" textFill="#37b5b8" />
-                              <TextField fx:id="adsressClient" prefHeight="34.0" prefWidth="201.0" />
                            </children>
                         </HBox>
                         <RadioButton fx:id="cinRadioB" layoutX="43.0" layoutY="125.0" mnemonicParsing="false" onAction="#onCheckCinRdB" text="CIN">
@@ -90,6 +91,11 @@
                         <RadioButton layoutX="204.0" layoutY="125.0" mnemonicParsing="false" onAction="#onCheckPassportRdB" text="PASSPORT" toggleGroup="$identifiant" />
                         <ComboBox fx:id="codepaysChoose" layoutX="874.0" layoutY="329.0" onAction="#changeCodePays" prefHeight="25.0" prefWidth="96.0" promptText="pays code" />
                         <Label fx:id="errorsLabel" layoutX="569.0" layoutY="496.0" prefHeight="106.0" prefWidth="395.0" textFill="#f80000" />
+                        <TextArea fx:id="adsressClient" layoutX="231.0" layoutY="484.0" prefHeight="114.0" prefWidth="192.0">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </TextArea>
                      </children>
                   </Pane>
                </content>
