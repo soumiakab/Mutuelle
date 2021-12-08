@@ -25,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -41,7 +42,7 @@ public class LoginController implements Initializable{
 	private Label emailErr;
 	
 	@FXML
-	private TextField passwordInput;
+	private PasswordField passwordInput;
 	
 	@FXML
 	private Label passwordErr;
@@ -95,7 +96,7 @@ public class LoginController implements Initializable{
 					try {
 						Parent root = (Pane)FXMLLoader.load(getClass().getResource("Mutuelle.fxml"));
 						Stage window=(Stage)loginButton.getScene().getWindow();					
-						window.setScene(new Scene(root,1000,500));
+						window.setScene(new Scene(root,961,596));
 						window.show();
 					} catch(Exception e) {
 						e.printStackTrace();

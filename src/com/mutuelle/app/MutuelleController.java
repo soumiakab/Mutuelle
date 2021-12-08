@@ -95,10 +95,10 @@ public class MutuelleController implements Initializable {
 	 boolean filledCin=true;
 	 
 	 @FXML
-		private ComboBox codepaysChoose;
-	 List<CodePays> codepays;
+		private ComboBox<CodePays> codepaysChoose;
+	 	List<CodePays> codepays;
 	 
-	 ObservableList<String> cdpays = FXCollections.<String>observableArrayList();
+	 ObservableList<CodePays> cdpays = FXCollections.<CodePays>observableArrayList();
 	 
 	 @FXML
 	 public void onCheckCinRdB() {
@@ -153,29 +153,29 @@ public class MutuelleController implements Initializable {
 			}
 			if(companyNameClient.getText().length() > 50) {
 				compErr++;
-				 err.append("the company name can not have more then 50 L");
+				 err.append("the company name can not have more then 50 L\n");
 			}
 			if(firstNameClient.getText().length() > 50) {
 				compErr++;
-				 err.append("the firstname can not have more then 50 L");
+				 err.append("the firstname can not have more then 50 L\n");
 			}
 			if(lastNameClient.getText().length() > 50) {
 				compErr++;
-				 err.append("the lastname can not have more then 50 L");
-			}
-			if(phoneClient.getText().length() > 14) {
-				compErr++;
-				 err.append("the phone number can not have more then 10 N");
-				
-			}
-			if(!phoneClient.getText().matches("[+][0-9]{3}[6-7]{1}[0-9]\\d{9}")) {
-				compErr++;
-				 err.append("the phone number is invalid");
+				 err.append("the lastname can not have more then 50 L\n");
 			}
 			
+			if(!phoneClient.getText().matches("[+]\\d{10}(\\d{3}?)")) {
+				
+				 err.append("the phone number is invalid\n");
+				 compErr++;
+			}
+			if(!emailClient.getText().matches("^(.+)@(.+)$")) {
+	            compErr++;
+	            err.append("email not correct");
+	        }
 			if(filledCin && cinClient.getText().length() > 8) {
 				compErr++;
-				 err.append("the cin number can not have more then 8 N");
+				 err.append("the cin number can not have more then 8 N\n");
 				
 			}
 		
@@ -185,7 +185,7 @@ public class MutuelleController implements Initializable {
 			}
 			if(!filledCin && !cinClient.getText().matches("[a-zA-Z]{2}\\d{7}")) {
 				compErr++;
-				 err.append("the Passport must be 2 numbers and 7 L");
+				 err.append("the Passport must be 2 numbers and 7 L\n");
 			}
 			
 			errorsLabel.setText(err.toString());
@@ -193,6 +193,7 @@ public class MutuelleController implements Initializable {
 	 }
 	 
 	 public void loadpayscodes() {
+		 	codepays=new ArrayList<CodePays>();
 			ObjectMapper objectMapper = new ObjectMapper();
 			  try {
 		            InputStream inputStream = new FileInputStream(new File("C:/Users/adm/eclipse-workspace/MutuelleCentralisée/src/json/codepays.json"));
@@ -215,12 +216,10 @@ public class MutuelleController implements Initializable {
 					e.printStackTrace();
 				}
 			  
-			 
 			  
-			  for(CodePays cd:codepays) {
-				  cdpays.add(cd.getDial_code());
-			  }
-			  codepaysChoose= new ComboBox(cdpays); 
+			  cdpays.addAll(codepays);
+			  
+			  codepaysChoose.getItems().addAll(codepays);
 		}
 	 public void viderInputs(){
 		 
@@ -236,6 +235,13 @@ public class MutuelleController implements Initializable {
 		
 	 }
 	 
+	 
+	 public void changeCodePays() {
+		//System.out.println("\n"+codepaysChoose.getValue());
+		 phoneClient.setText(codepaysChoose.getValue().toString());
+	 }
+	 
+	 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		initList();
@@ -249,6 +255,7 @@ public class MutuelleController implements Initializable {
 		companyName.setCellValueFactory(new PropertyValueFactory<Client, String>("companyName"));
 		tableClientList.setItems(data);
 		loadpayscodes();
+		cinRadioB.setSelected(true);
 	}
 	
 

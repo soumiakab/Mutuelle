@@ -6,6 +6,10 @@ public class CodePays {
 	private String dial_code;
 	private String code;
 	
+
+	public CodePays() {
+		
+	}
 	public CodePays(String name,String dial_code, String code) {
 		this.setName(name);
 		this.setDial_code(dial_code);
@@ -34,5 +38,10 @@ public class CodePays {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+	
+	@Override
+	public String toString() {
+		return dial_code;
 	}
 }
