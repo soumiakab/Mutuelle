@@ -148,47 +148,47 @@ public class MutuelleController implements Initializable {
 				  err.append("\nplease fill all inputs \n");
 				compErr++;
 			}
-			if(workBadgeNumberClient.getText().length() != 10 ) {
-				  err.append("the workBadge Number must contains 10 Letters\n");				
-				compErr++;
-			}
-			if(companyNameClient.getText().length() > 50) {
-				compErr++;
-				 err.append("the company name can not have more then 50 L\n");
-			}
-			if(firstNameClient.getText().length() > 50) {
-				compErr++;
-				 err.append("the firstname can not have more then 50 L\n");
-			}
-			if(lastNameClient.getText().length() > 50) {
-				compErr++;
-				 err.append("the lastname can not have more then 50 L\n");
-			}
-			
-			if(!phoneClient.getText().matches("[+]\\d{10}(\\d{3}?)")) {
+			else {
+				if(workBadgeNumberClient.getText().length() != 10 ) {
+					  err.append("the workBadge Number must contains 10 Letters\n");				
+					compErr++;
+				}
+				if(companyNameClient.getText().length() > 50) {
+					compErr++;
+					 err.append("the company name can not have more then 50 L\n");
+				}
+				if(firstNameClient.getText().length() > 50) {
+					compErr++;
+					 err.append("the firstname can not have more then 50 L\n");
+				}
+				if(lastNameClient.getText().length() > 50) {
+					compErr++;
+					 err.append("the lastname can not have more then 50 L\n");
+				}
 				
-				 err.append("the phone number is invalid\n");
-				 compErr++;
-			}
-			if(!emailClient.getText().matches("^(.+)@(.+)$")) {
-	            compErr++;
-	            err.append("email not correct");
-	        }
-			if(filledCin && cinClient.getText().length() > 8) {
-				compErr++;
-				 err.append("the cin number can not have more then 8 N\n");
-				
-			}
-		
-			if(filledCin && !cinClient.getText().matches("[a-zA-Z]{2}\\d{6}")) {
-				compErr++;
-				 err.append("the cin must be 2 numbers and 6 L");
-			}
-			if(!filledCin && !cinClient.getText().matches("[a-zA-Z]{2}\\d{7}")) {
-				compErr++;
-				 err.append("the Passport must be 2 numbers and 7 L\n");
-			}
+				if(!phoneClient.getText().matches("[+]\\d{2,4}?\\d{10}")) {					
+					 err.append("the phone number is invalid\n");
+					 compErr++;
+				}
+				if(!emailClient.getText().matches("^(.+)@(.+)$")) {
+		            compErr++;
+		            err.append("email not correct");
+		        }
+				if(filledCin && cinClient.getText().length() > 8) {
+					compErr++;
+					 err.append("the cin number can not have more then 8 N\n");
+					
+				}
 			
+				if(filledCin && !cinClient.getText().matches("[a-zA-Z]{2}\\d{6}")) {
+					compErr++;
+					 err.append("the cin must be 2 numbers and 6 L");
+				}
+				if(!filledCin && !cinClient.getText().matches("[a-zA-Z]{2}\\d{7}")) {
+					compErr++;
+					 err.append("the Passport must be 2 numbers and 7 L\n");
+				}
+			}
 			errorsLabel.setText(err.toString());
 			return compErr;
 	 }
