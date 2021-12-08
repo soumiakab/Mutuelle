@@ -67,7 +67,7 @@
                         </HBox>
                         <HBox alignment="CENTER" focusTraversable="true" layoutX="24.0" layoutY="38.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="67.0" prefWidth="360.0">
                            <children>
-                              <Label prefHeight="55.0" prefWidth="202.0" style="-fx-font-weight: bold; -fx-font-size: #fff;" text="Nom d’entreprise :" textFill="#37b5b8" />
+                              <Label prefHeight="55.0" prefWidth="202.0" style="-fx-font-weight: bold;" text="Nom d’entreprise :" textFill="#37b5b8" />
                               <TextField fx:id="companyNameClient" prefHeight="34.0" prefWidth="191.0" />
                            </children>
                         </HBox>
