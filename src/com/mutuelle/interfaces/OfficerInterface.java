@@ -10,4 +10,6 @@ public interface OfficerInterface {
 
 	boolean validateOfficerPassword(String password, int index, List<Officer> officers);
 
+	boolean Login(String email, String password);
+
 }

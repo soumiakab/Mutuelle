@@ -1,5 +1,4 @@
-package com.mutuelle.app;
-
+package com.mutuelle.app.views;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +15,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mutuelle.Impl.OfficerImpl;
+import com.mutuelle.app.dao.OfficerDao;
 import com.mutuelle.models.Officer;
 
 import javafx.fxml.FXML;
@@ -48,6 +48,10 @@ public class LoginController implements Initializable{
 	private Label passwordErr;
 	
 	private OfficerImpl officerImpl;
+	
+	private OfficerDao officerDao;
+	
+	
 	private List<Officer> Officers;
 	public int validateInputs() {
 		int valid=0;
@@ -90,27 +94,45 @@ public class LoginController implements Initializable{
 	
 	public void sinup() {
 		if(validateInputs()==0) {
-			int findEmail=officerImpl.searchOfficerByEmail(emailInput.getText().toString(), this.Officers);
-			if(findEmail!=-1) {
-				if(officerImpl.validateOfficerPassword(passwordInput.getText().toString(),findEmail,Officers)) {
-					try {
-						Parent root = (Pane)FXMLLoader.load(getClass().getResource("Mutuelle.fxml"));
-						Stage window=(Stage)loginButton.getScene().getWindow();					
-						window.setScene(new Scene(root,961,596));
-						window.show();
-					} catch(Exception e) {
-						e.printStackTrace();
-					}
-				}else {
-					emailErr.setText("");
-					passwordInput.setText("");
-					passwordErr.setText("* password invalid");
+//			int findEmail=officerImpl.searchOfficerByEmail(emailInput.getText().toString(), this.Officers);
+//			if(findEmail!=-1) {
+//				if(officerImpl.validateOfficerPassword(passwordInput.getText().toString(),findEmail,Officers)) {
+//					try {
+//						Parent root = (Pane)FXMLLoader.load(getClass().getResource("App.fxml"));
+//						Stage window=(Stage)loginButton.getScene().getWindow();					
+//						window.setScene(new Scene(root,961,596));
+//						window.show();
+//					} catch(Exception e) {
+//						e.printStackTrace();
+//					}
+//				}else {
+//					emailErr.setText("");
+//					passwordInput.setText("");
+//					passwordErr.setText("* password invalid");
+//				}
+//				
+//				
+//			}
+//			else {
+//				passwordErr.setText("");
+//				passwordInput.setText("");
+//				emailErr.setText("*email not found");
+//			}
+			
+			boolean log =officerImpl.Login(emailInput.getText().toString(), passwordInput.getText().toString());
+			if(log) {
+				try {
+					Parent root = (Pane)FXMLLoader.load(getClass().getResource("App.fxml"));
+					Stage window=(Stage)loginButton.getScene().getWindow();					
+					window.setScene(new Scene(root,961,596));
+					window.show();
+				} catch(Exception e) {
+					e.printStackTrace();
 				}
-			}
-			else {
-				passwordErr.setText("");
+			}else{
+				emailErr.setText("");
 				passwordInput.setText("");
-				emailErr.setText("*email not found");
+				passwordErr.setText("* email  or password invalid");
 			}
 		}
 		
@@ -118,6 +140,7 @@ public class LoginController implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		officerImpl=new OfficerImpl();
+		officerDao= new OfficerDao();
 		loadUsersData();
 		
 	}

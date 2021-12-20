@@ -1,4 +1,5 @@
-package com.mutuelle.app;
+package com.mutuelle.app.views;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InaccessibleObjectException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -16,6 +21,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mutuelle.Impl.ClientImpl;
+import com.mutuelle.app.dao.ClientDao;
 import com.mutuelle.models.Client;
 import com.mutuelle.models.CodePays;
 import com.mutuelle.models.Officer;
@@ -25,6 +31,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -35,14 +45,18 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.text.Text;
 
-public class MutuelleController implements Initializable {
+
+public class AppController implements Initializable {
 	
 	
 	
 	@FXML
 	private Button AddClient;
+	
+	@FXML
+	private Button filterButton;
+	
 	@FXML
 	private TextField workBadgeNumberClient;
 	@FXML
@@ -97,8 +111,29 @@ public class MutuelleController implements Initializable {
 	 
 	 @FXML
 		private ComboBox<CodePays> codepaysChoose;
-	 	List<CodePays> codepays;
 	 
+	 @FXML
+		private ComboBox<String> companiesNames;
+	 	List<CodePays> codepays;
+	 	
+	 	
+	 	
+	 	//filter textFiled
+	 	@FXML
+		private TextField cinInput;
+	 	
+	 	@FXML
+		private TextField emailInput;
+	 	
+	 	@FXML
+		private TextField firstnameInput;
+	 	
+	 	@FXML
+		private TextField lastNamEInput;
+	 	
+		
+	 
+	 	 ObservableList<String> cNames = FXCollections.<String>observableArrayList();
 	 ObservableList<CodePays> cdpays = FXCollections.<CodePays>observableArrayList();
 	 
 	 @FXML
@@ -117,7 +152,7 @@ public class MutuelleController implements Initializable {
 	 ObservableList<Client> data = FXCollections.<Client>observableArrayList();
 	
 	 public void initList() {
-		 clientImp= new ClientImpl(new ArrayList<Client>());
+		clientImp= new ClientImpl();
 		 clientImp.clientInit();
 		 fillList();
 	 }
@@ -125,10 +160,14 @@ public class MutuelleController implements Initializable {
 	 
 	 @FXML
 	 public void addToList(ActionEvent event) {
+		 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		 Date date = new Date();
 		 int errcmp=validateInputs();
 		 if(errcmp==0) {
-			 clientImp.setClient(workBadgeNumberClient.getText().toString(),companyNameClient.getText().toString(),adsressClient.getText().toString(),firstNameClient.getText().toString(),lastNameClient.getText().toString(),phoneClient.getText().toString(),emailClient.getText().toString(),cinClient.getText().toString());
+			 clientImp.setClient(workBadgeNumberClient.getText().toString(),companyNameClient.getText().toString(),adsressClient.getText().toString(),firstNameClient.getText().toString(),lastNameClient.getText().toString(),phoneClient.getText().toString(),emailClient.getText().toString(),cinClient.getText().toString(),dateDebutClient.getEditor().getText(),dateFormat.format(date));
+			 errorsLabel.setText(clientImp.addClient());
 			 fillList();
+			 initUI();
 			 viderInputs();
 		 }
 		 //tableClientList.setItems(data);
@@ -137,6 +176,9 @@ public class MutuelleController implements Initializable {
 	 public void fillList() {
 		 data.clear();
 		 data.addAll(clientImp.clients());
+	 
+		// ClientDao ClientDao= new ClientDao();
+		 //data.addAll(ClientDao.findAll());
 	 }
 	 
 	 
@@ -222,6 +264,17 @@ public class MutuelleController implements Initializable {
 			  
 			  codepaysChoose.getItems().addAll(codepays);
 		}
+	 
+	 
+	 
+	 public void loadComapiesNames() {
+		 cNames.clear();
+		 cNames.addAll(clientImp.companies());
+		 companiesNames.getItems().add("All");
+		 companiesNames.getItems().addAll(cNames);
+	 }
+	 
+	 
 	 public void viderInputs(){
 		 
 		workBadgeNumberClient.clear();
@@ -243,6 +296,93 @@ public class MutuelleController implements Initializable {
 	 }
 	 
 	 
+	 public void changeCompanyName() {
+		 clientImp.filterByCompanyName(companiesNames.getValue().toString());
+		 fillList();
+	}
+	 
+	 
+	 @FXML
+	 public void filtrer() {
+		 StringBuilder sb = new StringBuilder();
+		 int cp=0;
+		 if(!cinInput.getText().trim().isBlank()) {
+			 sb.append(" where ");
+			 sb.append(" identity LIKE '%"+cinInput.getText().trim()+"%' ");
+			 cp++;
+		 }
+		 if(!emailInput.getText().trim().isBlank()) {
+			 if(cp>0) {
+				 sb.append(" and ");
+			 }
+			 else {
+				 sb.append(" where ");
+			 }
+			 sb.append(" email LIKE '%"+emailInput.getText().trim()+"%' ");
+			 cp++;
+		 }
+		 if(!firstnameInput.getText().trim().isBlank()) {
+			 if(cp>0) {
+				 sb.append(" and ");
+			 }
+			 else {
+				 sb.append(" where ");
+			 }
+			 sb.append(" firstname LIKE '%"+firstnameInput.getText().trim()+"%' ");
+			 cp++;
+		 }
+		 if(!lastNamEInput.getText().trim().isBlank()) {
+			 if(cp>0) {
+				 sb.append(" and ");
+			 }
+			 else {
+				 sb.append(" where ");
+			 }
+			 sb.append(" lastname LIKE '%"+lastNamEInput.getText().trim()+"%' ");
+			 
+		 }
+		 System.out.println(sb.toString());
+		clientImp.filterClientList(sb.toString());
+		 
+		 fillList();
+	}
+	 
+	//chartTab
+	 ClientDao clientdao = new ClientDao();
+	 
+	 @FXML
+	 private CategoryAxis registerDate;
+	 
+	@FXML
+    private  NumberAxis  numberClients;
+	
+	@FXML
+	private BarChart<String, Integer> clientsChart;
+	
+	 private void initUI() {
+
+		 clientsChart.getData().clear();
+	        
+		 registerDate.setLabel("Date");
+		 
+	        clientsChart.setTitle("Clients In Day");
+
+	        var data = new XYChart.Series<String,Integer>();
+	        for(Map<String,Integer> elemt:clientdao.clientsInDay()) {
+	        	 //System.out.println(elemt.keySet()+""+elemt.values().toArray()[0]);
+	        	 int r=(int) elemt.values().toArray()[0];
+	        	 data.getData().add(new XYChart.Data<>(elemt.keySet().toString(),r));
+	        }
+
+
+	        clientsChart.getData().add(data);
+	        clientsChart.setLegendVisible(false);
+
+	        
+
+	    }
+	 
+	 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		initList();
@@ -256,6 +396,8 @@ public class MutuelleController implements Initializable {
 		companyName.setCellValueFactory(new PropertyValueFactory<Client, String>("companyName"));
 		tableClientList.setItems(data);
 		loadpayscodes();
+		loadComapiesNames();
+		 initUI();
 		cinRadioB.setSelected(true);
 	}
 	
