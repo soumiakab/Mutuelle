@@ -40,8 +40,10 @@ public class CodePays {
 		this.code = code;
 	}
 	
+	
+	
 	@Override
 	public String toString() {
-		return dial_code;
+		return code+" "+dial_code;
 	}
 }

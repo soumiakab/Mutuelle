@@ -79,7 +79,7 @@ public static String getAllWithWhere(String tableName, String condition) {
 		
 		for(int i=0;i<coulumns.length;i++) {
 			
-			sb.append(coulumns[0]+"=?");
+			sb.append(coulumns[i]+"=?");
 			
 		}
 		return sb.toString();

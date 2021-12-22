@@ -50,14 +50,14 @@ public class ClientImpl implements ClientInterface{
 	}
 	
 	@Override
-	public String addClient() {
+	public boolean addClient() {
 		int inserted = ClientDao.insert(client);
-		if(inserted==1) {
-		this.clients.clear();
-		this.clients.addAll(ClientDao.findAll());
-		return "inserer ";
+		if(inserted == 1) {
+			this.clients.clear();
+			this.clients.addAll(ClientDao.findAll());
+			return true;
 		}else {
-			return "l email /cin /badgeNumber deja exist ";
+			return false;
 		}
 		//clients.add(this.client);
 		

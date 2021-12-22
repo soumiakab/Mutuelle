@@ -10,6 +10,7 @@ import java.lang.reflect.InaccessibleObjectException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,9 +23,10 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mutuelle.Impl.ClientImpl;
 import com.mutuelle.app.dao.ClientDao;
+import com.mutuelle.helpers.AlertHelper;
+import com.mutuelle.helpers.ValidateInputs;
 import com.mutuelle.models.Client;
 import com.mutuelle.models.CodePays;
-import com.mutuelle.models.Officer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,6 +47,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 
 
 public class AppController implements Initializable {
@@ -106,18 +109,15 @@ public class AppController implements Initializable {
 		private TableColumn<Client,String> address;
 	 @FXML
 		private TableColumn<Client,String> companyName;
-	 
-	 boolean filledCin=true;
-	 
+	
 	 @FXML
 		private ComboBox<CodePays> codepaysChoose;
 	 
 	 @FXML
 		private ComboBox<String> companiesNames;
-	 	List<CodePays> codepays;
-	 	
-	 	
-	 	
+	 	List<CodePays> codepays; 
+		 boolean filledCin=true;
+		 
 	 	//filter textFiled
 	 	@FXML
 		private TextField cinInput;
@@ -132,9 +132,11 @@ public class AppController implements Initializable {
 		private TextField lastNamEInput;
 	 	
 		
-	 
-	 	 ObservableList<String> cNames = FXCollections.<String>observableArrayList();
+ 	 ClientImpl clientImp;
+	 ObservableList<Client> data = FXCollections.<Client>observableArrayList();
+	 ObservableList<String> cNames = FXCollections.<String>observableArrayList();
 	 ObservableList<CodePays> cdpays = FXCollections.<CodePays>observableArrayList();
+	 
 	 
 	 @FXML
 	 public void onCheckCinRdB() {
@@ -142,21 +144,15 @@ public class AppController implements Initializable {
 		 filledCin=true;
 	 }
 	 
+	 
 	 @FXML
 	 public void onCheckPassportRdB() {
 		 cinPassLabel.setText("Passport:");
 		 filledCin=false;
 	 }
 	 
-	 ClientImpl clientImp;
-	 ObservableList<Client> data = FXCollections.<Client>observableArrayList();
 	
-	 public void initList() {
-		clientImp= new ClientImpl();
-		 clientImp.clientInit();
-		 fillList();
-	 }
-	
+	 //************************************** B add to list**************//
 	 
 	 @FXML
 	 public void addToList(ActionEvent event) {
@@ -164,76 +160,117 @@ public class AppController implements Initializable {
 		 Date date = new Date();
 		 int errcmp=validateInputs();
 		 if(errcmp==0) {
-			 clientImp.setClient(workBadgeNumberClient.getText().toString(),companyNameClient.getText().toString(),adsressClient.getText().toString(),firstNameClient.getText().toString(),lastNameClient.getText().toString(),phoneClient.getText().toString(),emailClient.getText().toString(),cinClient.getText().toString(),dateDebutClient.getEditor().getText(),dateFormat.format(date));
-			 errorsLabel.setText(clientImp.addClient());
+			 clientImp.setClient(workBadgeNumberClient.getText().toString(),companyNameClient.getText().toString(),adsressClient.getText().toString(),firstNameClient.getText().toString(),lastNameClient.getText().toString(),codepaysChoose.getValue().getDial_code()+phoneClient.getText().toString(),emailClient.getText().toString(),cinClient.getText().toString(),dateDebutClient.getEditor().getText(),dateFormat.format(date));
+			if(clientImp.addClient()) {
 			 fillList();
 			 initUI();
 			 viderInputs();
+			 errorsLabel.setTextFill(Color.GREEN);
+			 errorsLabel.setText("Inserer");
+			 AlertHelper.SuccessAlert("Insert Client", "Done");
+			 }
+			else {
+				AlertHelper.ErrorAlert("info", "message");
+				 errorsLabel.setTextFill(Color.RED);
+				 errorsLabel.setText("l email /cin /badgeNumber deja exist ");
+			}
 		 }
 		 //tableClientList.setItems(data);
 	 }
 	 
-	 public void fillList() {
-		 data.clear();
-		 data.addAll(clientImp.clients());
 	 
-		// ClientDao ClientDao= new ClientDao();
-		 //data.addAll(ClientDao.findAll());
-	 }
+	 //************************************** E add to list **************//
 	 
+
 	 
+	 //**************************************B validate inputs**************//
 	 public Integer validateInputs() {
+		 
+		 errorsLabel.setTextFill(Color.RED);
 		 int compErr=0;
 		 StringBuilder err = new StringBuilder();
-		// err.delete(0, err.length());
-			if(workBadgeNumberClient.getText().isBlank() == true || emailClient.getText().isBlank() == true || adsressClient.getText().isBlank() == true || cinClient.getText().isBlank() == true || phoneClient.getText().isBlank() == true || firstNameClient.getText().isBlank() == true || lastNameClient.getText().isBlank() == true || companyNameClient.getText().isBlank() == true || dateDebutClient.getValue().toString().isBlank() == true) {
+		 
+			if(workBadgeNumberClient.getText().trim().isBlank() == true || emailClient.getText().trim().isBlank() == true || adsressClient.getText().trim().isBlank() == true || cinClient.getText().trim().isBlank() == true || phoneClient.getText().trim().isBlank() == true || firstNameClient.getText().trim().isBlank() == true || lastNameClient.getText().trim().isBlank() == true || companyNameClient.getText().trim().isBlank() == true || dateDebutClient.getValue().toString().trim().isBlank() == true) {
 				  err.append("\nplease fill all inputs \n");
 				compErr++;
 			}
 			else {
-				if(workBadgeNumberClient.getText().length() != 10 ) {
+				
+				
+				if(!ValidateInputs.verifyMaxLength( workBadgeNumberClient.getText(), 10)  || !ValidateInputs.verifyMinLength( workBadgeNumberClient.getText(), 10)) {
 					  err.append("the workBadge Number must contains 10 Letters\n");				
 					compErr++;
 				}
-				if(companyNameClient.getText().length() > 50) {
+				
+				if(!ValidateInputs.verifyMaxLength(companyNameClient.getText(),50)) {
+					
 					compErr++;
 					 err.append("the company name can not have more then 50 L\n");
 				}
-				if(firstNameClient.getText().length() > 50) {
+				
+				if(!ValidateInputs.verifyMaxLength(firstNameClient.getText(), 50)) {
 					compErr++;
 					 err.append("the firstname can not have more then 50 L\n");
 				}
-				if(lastNameClient.getText().length() > 50) {
+				
+				if(!ValidateInputs.verifyMaxLength(lastNameClient.getText(), 50)) {
 					compErr++;
 					 err.append("the lastname can not have more then 50 L\n");
 				}
 				
-				if(!phoneClient.getText().matches("[+]\\d{2,4}?\\d{10}")) {					
+				
+				if(!ValidateInputs.verifyPhone(phoneClient.getText())) {					
 					 err.append("the phone number is invalid\n");
 					 compErr++;
 				}
-				if(!emailClient.getText().matches("^(.+)@(.+)$")) {
+				
+				if(! ValidateInputs.verifyEmail(emailClient.getText())) {
 		            compErr++;
 		            err.append("email not correct");
 		        }
-				if(filledCin && cinClient.getText().length() > 8) {
+				
+				if(filledCin && !ValidateInputs.verifyMaxLength(cinClient.getText(), 8)) {
+					
 					compErr++;
 					 err.append("the cin number can not have more then 8 N\n");
 					
 				}
 			
-				if(filledCin && !cinClient.getText().matches("[a-zA-Z]{2}\\d{6}")) {
+				if(filledCin && ! ValidateInputs.verifyCin( cinClient.getText())) {
 					compErr++;
-					 err.append("the cin must be 2 numbers and 6 L");
+					 err.append("the cin must be 2 L and 6 numbers");
 				}
-				if(!filledCin && !cinClient.getText().matches("[a-zA-Z]{2}\\d{7}")) {
+				if(!filledCin && ! ValidateInputs.verifyPassport( cinClient.getText())) {
+					
 					compErr++;
-					 err.append("the Passport must be 2 numbers and 7 L\n");
+					 err.append("the Passport must be 2 L and 7 numbers\n");
 				}
 			}
 			errorsLabel.setText(err.toString());
 			return compErr;
 	 }
+	 
+	 //**************************************E validate inputs**************//
+	 
+	 
+	 //*************B reset inputs*****//
+	 public void viderInputs(){
+		 
+			workBadgeNumberClient.clear();
+			emailClient.clear();
+			adsressClient.clear();
+			cinClient.clear();
+			phoneClient.clear();
+			firstNameClient.clear();
+			lastNameClient.clear();
+			companyNameClient.clear();
+			dateDebutClient.getEditor().clear();
+			
+		 }
+	 
+	//*************E reset inputs*****//
+	 
+	//*************B load paysCodes*****//
 	 
 	 public void loadpayscodes() {
 		 	codepays=new ArrayList<CodePays>();
@@ -264,8 +301,25 @@ public class AppController implements Initializable {
 			  
 			  codepaysChoose.getItems().addAll(codepays);
 		}
+	//*************E load paysCodes*****//
 	 
 	 
+	 
+	 
+	 //***********B change selected code pays*********//
+	 
+	 public void changeCodePays() {
+			//System.out.println("\n"+codepaysChoose.getValue());
+			 phoneClient.setText(codepaysChoose.getValue().getDial_code());
+	}
+	 
+	 //***********end change selected company**********//
+	 
+	 
+	 
+	 
+	 
+	 //***********B load and change selected company**********//
 	 
 	 public void loadComapiesNames() {
 		 cNames.clear();
@@ -275,39 +329,57 @@ public class AppController implements Initializable {
 	 }
 	 
 	 
-	 public void viderInputs(){
-		 
-		workBadgeNumberClient.clear();
-		emailClient.clear();
-		adsressClient.clear();
-		cinClient.clear();
-		phoneClient.clear();
-		firstNameClient.clear();
-		lastNameClient.clear();
-		companyNameClient.clear();
-		dateDebutClient.getEditor().clear();
-		
-	 }
-	 
-	 
-	 public void changeCodePays() {
-		//System.out.println("\n"+codepaysChoose.getValue());
-		 phoneClient.setText(codepaysChoose.getValue().toString());
-	 }
-	 
+	
 	 
 	 public void changeCompanyName() {
-		 clientImp.filterByCompanyName(companiesNames.getValue().toString());
-		 fillList();
+		// clientImp.filterByCompanyName(companiesNames.getValue().toString());
+		//fillList();
+		 filtrer();
 	}
 	 
+
+//***********end load and change selected company**********//
 	 
+	 
+	 
+	 //**********B init and fill list ********************************** //
+	 
+	 public void fillList() {
+		 data.clear();
+		 data.addAll(clientImp.clients());
+	 
+		// ClientDao ClientDao= new ClientDao();
+		 //data.addAll(ClientDao.findAll());
+	 }
+	 
+	 
+	 public void initList() {
+			clientImp= new ClientImpl();
+			 clientImp.clientInit();
+			 fillList();
+     }
+	 //************and init ************//
+		
+	 
+	
+	 
+	 //******************B Filter*************//
 	 @FXML
 	 public void filtrer() {
 		 StringBuilder sb = new StringBuilder();
 		 int cp=0;
-		 if(!cinInput.getText().trim().isBlank()) {
+		 if( !companiesNames.getSelectionModel().isEmpty() &&!companiesNames.getValue().toString().equalsIgnoreCase("All")) {
 			 sb.append(" where ");
+			 sb.append(" companyName LIKE '%"+companiesNames.getValue().toString().trim()+"%' ");
+			 cp++;
+		 }
+		 if(!cinInput.getText().trim().isBlank()) {
+			 if(cp>0) {
+				 sb.append(" and ");
+			 }
+			 else{
+			     sb.append(" where ");
+			 }
 			 sb.append(" identity LIKE '%"+cinInput.getText().trim()+"%' ");
 			 cp++;
 		 }
@@ -347,7 +419,8 @@ public class AppController implements Initializable {
 		 fillList();
 	}
 	 
-	//chartTab
+	//**********chartTab
+	 
 	 ClientDao clientdao = new ClientDao();
 	 
 	 @FXML
@@ -365,11 +438,12 @@ public class AppController implements Initializable {
 	        
 		 registerDate.setLabel("Date");
 		 
-	        clientsChart.setTitle("Clients In Day");
+	    clientsChart.setTitle("Clients In Day");
 
 	        var data = new XYChart.Series<String,Integer>();
+	        
 	        for(Map<String,Integer> elemt:clientdao.clientsInDay()) {
-	        	 //System.out.println(elemt.keySet()+""+elemt.values().toArray()[0]);
+	        	
 	        	 int r=(int) elemt.values().toArray()[0];
 	        	 data.getData().add(new XYChart.Data<>(elemt.keySet().toString(),r));
 	        }
@@ -381,6 +455,8 @@ public class AppController implements Initializable {
 	        
 
 	    }
+	 //******end chart
+	 
 	 
 	 
 	@Override
@@ -397,7 +473,11 @@ public class AppController implements Initializable {
 		tableClientList.setItems(data);
 		loadpayscodes();
 		loadComapiesNames();
-		 initUI();
+		dateDebutClient.getEditor().setDisable(true);
+		dateDebutClient.getEditor().setOpacity(1);
+		dateDebutClient.setValue(LocalDate.now());
+		codepaysChoose.getSelectionModel().selectFirst();
+		initUI();
 		cinRadioB.setSelected(true);
 	}
 	

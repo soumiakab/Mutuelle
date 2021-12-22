@@ -31,11 +31,11 @@ class ClienttTest {
 		    	
 		        Client client =clientImpl.getClient();
 		        assertNotNull(client); //check if the object is != null
-		        //check if the returned object is of class Expression.
+		        //check if the returned object is of class Client.
 		        assertTrue(client instanceof Client);
 		    } catch(Exception e){
 		        // let the test fail, if your function throws an Exception.
-		        fail("got Exception, i want an Expression");
+		        fail("got Exception, Expression");
 		     }
 		
 	  }
@@ -69,7 +69,7 @@ class ClienttTest {
 	@Test
 	public void addClient() {
 		int size=clientImpl.clients().size();
-		clientImpl.setClient( "az12345678","company","22 db ffjfjf","firstName","lastNAme","+212645456776","fjjf@gmail.com","ZE234567","2021-12-22","2021-04-12");
+		clientImpl.setClient( "az12340078","company","22 db ffjfjf","firstName","lastNAme","+212645456776","fpmpf@gmail.com","ZE278567","2021-12-22","2021-04-12");
 		
 		assertEquals( clientImpl.clients().size(),(size+1));
 	}

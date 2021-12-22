@@ -14,16 +14,16 @@
  <children>
       <Pane prefHeight="602.0" prefWidth="477.0" style="-fx-background-color: #37B5B8;">
          <children>
-            <ImageView fitHeight="203.0" fitWidth="265.0" layoutX="88.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../images/mutueelle.png" />
-               </image>
-            </ImageView>
             <Text fill="WHITE" layoutX="110.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Mutuelle" wrappingWidth="221.236328125">
                <font>
                   <Font size="49.0" />
                </font>
             </Text>
+            <ImageView fitHeight="232.0" fitWidth="341.0" layoutX="50.0" layoutY="130.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../resources/images/mutueelle.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
       <Pane layoutX="477.0" prefHeight="596.0" prefWidth="486.0" style="-fx-background-color: #fff;">

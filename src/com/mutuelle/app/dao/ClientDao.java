@@ -109,8 +109,8 @@ public class ClientDao implements DaoInterface<Client> {
 				stmt.setString(7,client.getAddress());
 				stmt.setString(8,client.getCompanyName());
 				stmt.setString(9,client.getWorkBadgeNumber());
-				stmt.setString(10,client.getBeginDate());
-				stmt.setString(11,client.getCreatedAt());
+				stmt.setString(10,client.getCreatedAt());
+				stmt.setString(11,client.getBeginDate());
 				 System.out.println(stmt);
 				int result = stmt.executeUpdate();		
 				
@@ -131,11 +131,11 @@ public class ClientDao implements DaoInterface<Client> {
 	public boolean ifExists(String cin,String WokBadgeN,String email) {
 		try {
         	conn = DatabaseConnection.getConnection();
-			stmt = conn.prepareStatement(SqlQueries.filter("clients", "where email like '"+email+"' or workBadgeNumber like '"+WokBadgeN+"' or cin like '"+cin+"' "));
-           ResultSet rs = stmt.executeQuery();
+			stmt = conn.prepareStatement(SqlQueries.filter("clients", "where email like '"+email+"' or workBadgeNumber like '"+WokBadgeN+"' or identity like '"+cin+"' "));
+			 System.out.println(stmt);
+             ResultSet rs = stmt.executeQuery();
 			
 			if (rs.next()) {
-			
 				return true;
 			}
 			
