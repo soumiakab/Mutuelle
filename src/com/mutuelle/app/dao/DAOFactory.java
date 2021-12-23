@@ -9,4 +9,5 @@ public class DAOFactory {
 	public static OfficerDao getOfficerDao() {
 		return new OfficerDao();
 	}
+	
 }

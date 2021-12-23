@@ -8,6 +8,7 @@ module MutuelleCentraliseeApp {
 	requires org.junit.jupiter.api;
 	requires junit;
 	requires jBCrypt;
+	requires java.mail;
 	
 	opens com.mutuelle.app to javafx.graphics, javafx.fxml;
 	opens com.mutuelle.app.views to javafx.graphics, javafx.fxml;

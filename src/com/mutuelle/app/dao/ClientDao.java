@@ -207,9 +207,7 @@ public class ClientDao implements DaoInterface<Client> {
 		
 		
 	}
-	
-	
-	
+			
 	
 	public List<Client> filterClientListByCompanyName(String cd){
 		try {

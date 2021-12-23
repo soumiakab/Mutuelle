@@ -48,8 +48,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
-
-
+import com.mutuelle.Impl.Mail;
 public class AppController implements Initializable {
 	
 	
@@ -162,6 +161,7 @@ public class AppController implements Initializable {
 		 if(errcmp==0) {
 			 clientImp.setClient(workBadgeNumberClient.getText().toString(),companyNameClient.getText().toString(),adsressClient.getText().toString(),firstNameClient.getText().toString(),lastNameClient.getText().toString(),codepaysChoose.getValue().getDial_code()+phoneClient.getText().toString(),emailClient.getText().toString(),cinClient.getText().toString(),dateDebutClient.getEditor().getText(),dateFormat.format(date));
 			if(clientImp.addClient()) {
+		     Mail.send(emailClient.getText().toString());
 			 fillList();
 			 initUI();
 			 viderInputs();
