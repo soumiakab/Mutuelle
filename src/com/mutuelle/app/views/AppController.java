@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -48,7 +51,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
-import com.mutuelle.Impl.Mail;
+import  com.mutuelle.helpers.Mail;
 public class AppController implements Initializable {
 	
 	
@@ -136,6 +139,10 @@ public class AppController implements Initializable {
 	 ObservableList<String> cNames = FXCollections.<String>observableArrayList();
 	 ObservableList<CodePays> cdpays = FXCollections.<CodePays>observableArrayList();
 	 
+	 //***********logger************//
+	 Logger logger = Logger.getLogger(AppController.class);
+	 
+	 
 	 
 	 @FXML
 	 public void onCheckCinRdB() {
@@ -162,6 +169,7 @@ public class AppController implements Initializable {
 			 clientImp.setClient(workBadgeNumberClient.getText().toString(),companyNameClient.getText().toString(),adsressClient.getText().toString(),firstNameClient.getText().toString(),lastNameClient.getText().toString(),codepaysChoose.getValue().getDial_code()+phoneClient.getText().toString(),emailClient.getText().toString(),cinClient.getText().toString(),dateDebutClient.getEditor().getText(),dateFormat.format(date));
 			if(clientImp.addClient()) {
 		     Mail.send(emailClient.getText().toString());
+		     logger.info("client add successfully "+ emailClient.getText().toString());
 			 fillList();
 			 initUI();
 			 viderInputs();
@@ -173,6 +181,7 @@ public class AppController implements Initializable {
 				AlertHelper.ErrorAlert("info", "message");
 				 errorsLabel.setTextFill(Color.RED);
 				 errorsLabel.setText("l email /cin /badgeNumber deja exist ");
+				 logger.error("l email /cin /badgeNumber deja exist ");
 			}
 		 }
 		 //tableClientList.setItems(data);
@@ -280,19 +289,21 @@ public class AppController implements Initializable {
 		            TypeReference<List<CodePays>> typeReference = new TypeReference<List<CodePays>>() {};
 		            codepays = objectMapper.readValue(inputStream, typeReference);	          
 		        }catch(FileNotFoundException e) {
+		        	logger.error(e);
 		            e.printStackTrace();
 		        } catch (StreamReadException e) {
-					// TODO Auto-generated catch block
+		        	logger.error(e);
+					
 					e.printStackTrace();
 				} catch (DatabindException e) {
-					// TODO Auto-generated catch block
+					logger.error(e);
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					logger.error(e);
 					e.printStackTrace();
 				}
 			  catch (InaccessibleObjectException e) {
-					// TODO Auto-generated catch block
+				  logger.error(e);
 					e.printStackTrace();
 				}
 			  
@@ -461,6 +472,9 @@ public class AppController implements Initializable {
 	 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		String log4jConfPath = "src/com/mutuelle/app/logs/javaLogger.properties";
+        PropertyConfigurator.configure(log4jConfPath);
+        logger.info("interface user intialized");
 		initList();
 		workBadgeNumber.setCellValueFactory(new PropertyValueFactory<Client, String>("workBadgeNumber"));
 		firstName.setCellValueFactory(new PropertyValueFactory<Client, String>("firstname"));

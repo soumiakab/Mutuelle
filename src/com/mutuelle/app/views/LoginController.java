@@ -4,6 +4,9 @@ package com.mutuelle.app.views;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.mutuelle.Impl.OfficerImpl;
 
 import javafx.fxml.FXML;
@@ -41,6 +44,9 @@ public class LoginController implements Initializable{
 	
 	
 	//private List<Officer> Officers;
+	
+	 //***********logger************//
+	Logger logger = Logger.getLogger(LoginController.class.getCanonicalName());
 	
 	
 	public int validateInputs() {
@@ -115,23 +121,29 @@ public class LoginController implements Initializable{
 		boolean log =officerImpl.Login(emailInput.getText().toString(), passwordInput.getText().toString());
 		if(log) {
 			try {
+				 logger.info("User loggins successfuly "+emailInput.getText().toString());
 				Parent root = (Pane)FXMLLoader.load(getClass().getResource("App.fxml"));
 				Stage window=(Stage)loginButton.getScene().getWindow();					
 				window.setScene(new Scene(root,961,596));
 				window.show();
 			} catch(Exception e) {
+				logger.error(e);
 				e.printStackTrace();
 			}
 		}else{
 			emailErr.setText("");
 			passwordInput.setText("");
 			passwordErr.setText("* email  or password invalid");
+			logger.error("invalid password or email");
 		}
 		}
 		
 	}
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		String log4jConfPath = "src/com/mutuelle/app/logs/javaLogger.properties";
+		PropertyConfigurator.configure(log4jConfPath);
+		 logger.info("app opned");
 		officerImpl=new OfficerImpl();
 		//officerDao= new OfficerDao();
 		//loadUsersData();

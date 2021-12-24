@@ -9,7 +9,7 @@ module MutuelleCentraliseeApp {
 	requires junit;
 	requires jBCrypt;
 	requires java.mail;
-	
+	requires log4j;
 	opens com.mutuelle.app to javafx.graphics, javafx.fxml;
 	opens com.mutuelle.app.views to javafx.graphics, javafx.fxml;
 	exports com.mutuelle.app.views;
